@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import { pokemonNames } from '@/lib/pokemonNames';
 import { typeWeaknesses } from '@/lib/typeWeaknesses';
 import PokemonCard from '@/app/components/PokemonCard';
 import loadingGif from '@/public/pikachu-sprint-animation.gif'
+import PlayIcon from '@/app/components/PlayIcon';
 
 interface Pokemon {
   name: string;
@@ -43,6 +44,7 @@ export default function PokemonDetail() {
   const router = useRouter();
   const [pokemon, setPokemon] = useState<Pokemon | null>(null);
   const [hover, setHover] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (!name) return;
@@ -125,7 +127,7 @@ export default function PokemonDetail() {
     }
   };
 
-  if (!pokemon) return <div className='mt-10 mb-10 text-center font-bold text-2xl tracking-tighter text-zinc-700 dark:text-zinc-300'>
+  if (!pokemon) return <div className='mt-10 mb-10 text-center font-bold text-2xl tracking-tighter text-zinc-700 dark:text-zinc-300 animate-bounce transition-all'>
     <Image 
       src={loadingGif} 
       alt='Loading Gif'
@@ -134,15 +136,37 @@ export default function PokemonDetail() {
       className='justify-center align-center text-center flex items-center mx-auto mb-4'
       priority
     />
-    Loading...
+      Loading Pokémon...
     </div>;
 
   const formattedId = pokemon.id.toString().padStart(3, '0');
 
+  const playCry = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  };
+
   return (
-    <div className="min-h-screen p-2">
-      <div className="mt-10 mb-20 max-w-4xl mx-auto bg-zinc-50 dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden">
-        <div className="p-4 md:p-10 flex flex-col md:flex-row items-center">
+    <div className="min-h-screen">
+      <div className="max-w-4xl mx-auto md:bg-zinc-50 md:dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden mb-10">
+      <div className="flex justify-between p-6">
+          <button
+            onClick={() => handleNavigation('prev')}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm"
+            disabled={pokemonNames.indexOf(name as string) === 0}
+          >
+            Previous Pokémon
+          </button>
+          <button
+            onClick={() => handleNavigation('next')}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm"
+            disabled={pokemonNames.indexOf(name as string) === pokemonNames.length - 1}
+          >
+            Next Pokémon
+          </button>
+        </div>
+        <div className="p-2 md:px-10 flex flex-col md:flex-row items-center">
           <div className="w-full md:w-2/4 flex justify-center md:justify-start">
             <div className="relative w-full pb-full md:pb-0 md:h-0" style={{ paddingBottom: '100%' }}>
               {pokemon.image && (
@@ -161,21 +185,31 @@ export default function PokemonDetail() {
             <h1 className="text-3xl font-bold capitalize text-gray-900 dark:text-white">
               {pokemon.name}
             </h1>
-            <p className="text-gray-600 dark:text-gray-300">#{formattedId}</p>
-            <button
-              onMouseEnter={() => setHover(true)}
-              onMouseLeave={() => setHover(false)}
-              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md transition-all ease-in-out"
-            >
-              See shiny version
-            </button>
+            <p className="mt-2 text-zinc-600 dark:text-zinc-300">#{formattedId}</p>
+            <div className='flex space-x-2 mt-2'>
+              <button
+                aria-hidden="true"
+                onClick={playCry} 
+                className="flex items-center bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 hover:dark:bg-zinc-600 text-zinc-800 dark:text-zinc-200 px-4 py-2 text-xs font-semibold rounded-full"
+              >
+                Play Cry
+                <PlayIcon className="ml-1 h-3 w-3 stroke-none fill-zinc-900 dark:fill-zinc-50" />
+              </button>
+              <button
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+                className="bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 hover:dark:bg-zinc-600 text-zinc-800 dark:text-zinc-200 px-4 py-2 text-xs font-semibold rounded-full"
+              >
+                Shiny Version
+              </button>
+            </div>
             <div className="mt-4">
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Types</h2>
+              <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200">Types:</h2>
               <div className="flex space-x-2 mt-2">
                 {pokemon.types.map((type) => (
                   <span 
                     key={type} 
-                    className={`px-4 py-2 text-xs font-semibold rounded-full ${getTypeColor(type)}`}
+                    className={`capitalize px-4 py-2 text-xs font-semibold rounded-full ${getTypeColor(type)}`}
                   >
                     {type}
                   </span>
@@ -183,20 +217,20 @@ export default function PokemonDetail() {
               </div>
             </div>
             <div className="mt-4">
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Abilities</h2>
+              <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200">Abilities:</h2>
               <div className="flex space-x-2 mt-2">
                 {pokemon.abilities.map((ability) => (
-                  <span key={ability} className="text-xs font-semibold bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full px-3 py-1">
+                  <span key={ability} className="capitalize text-xs font-semibold bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-full px-3 py-1">
                     {ability}
                   </span>
                 ))}
               </div>
             </div>
             <div className="mt-4">
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Weaknesses</h2>
+              <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200">Weaknesses:</h2>
               <div className="flex space-x-2 mt-2">
                 {pokemon.weaknesses.map((weakness) => (
-                  <span key={weakness} className={`text-xs font-semibold rounded-full ${getTypeColor(weakness)} px-3 py-1`}>
+                  <span key={weakness} className={`capitalize text-xs font-semibold rounded-full ${getTypeColor(weakness)} px-3 py-1`}>
                     {weakness}
                   </span>
                 ))}
@@ -204,61 +238,46 @@ export default function PokemonDetail() {
             </div>
           </div>
         </div>
-        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="py-6 md:px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Details:</h2>
+            <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Details:</h2>
             <div className="mt-2">
-              <p className="text-lg text-zinc-700 dark:text-gray-200">{pokemon.flavorText}</p>
-              <p className="text-lg text-zinc-600 dark:text-zinc-400 mt-2">Category: {pokemon.category}</p>
-              <p className="text-lg text-zinc-600 dark:text-zinc-400">Height: {pokemon.height / 10} m</p>
-              <p className="text-lg text-zinc-600 dark:text-zinc-400">Weight: {pokemon.weight / 10} kg</p>
+              <p className="text-lg text-zinc-700 dark:text-zinc-300">{pokemon.flavorText}</p>
+              <p className="text-lg text-zinc-700 dark:text-zinc-300 mt-2">Category: {pokemon.category}</p>
+              <p className="text-lg text-zinc-700 dark:text-zinc-300">Height: {pokemon.height / 10} m</p>
+              <p className="text-lg text-zinc-700 dark:text-zinc-300">Weight: {pokemon.weight / 10} kg</p>
             </div>
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Species Information</h2>
+            <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Species Information</h2>
             <div className="mt-2">
-              <p className="text-lg text-gray-800 dark:text-gray-200">Habitat: {pokemon.species.habitat}</p>
-              <p className="text-lg text-gray-800 dark:text-gray-200">Shape: {pokemon.species.shape}</p>
-              <p className="text-lg text-gray-800 dark:text-gray-200">Color: {pokemon.species.color}</p>
-              <p className="text-lg text-gray-800 dark:text-gray-200">Generation: {pokemon.species.generation}</p>
+              <p className="text-lg text-zinc-700 dark:text-zinc-300">Habitat: {pokemon.species.habitat}</p>
+              <p className="text-lg text-zinc-700 dark:text-zinc-300">Shape: {pokemon.species.shape}</p>
+              <p className="text-lg text-zinc-700 dark:text-zinc-300">Color: {pokemon.species.color}</p>
+              <p className="text-lg text-zinc-700 dark:text-zinc-300">Generation: {pokemon.species.generation}</p>
             </div>
           </div>
         </div>
-        <div className="p-6">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Stats</h2>
+        <div className="py-6 md:px-6">
+          <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Stats</h2>
           <div className="grid grid-cols-2 gap-8 mt-4">
             {pokemon.stats.map((stat) => (
               <div key={stat.name} className="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 capitalize">{stat.name}</h3>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.base_stat}</p>
+                <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200 capitalize">{stat.name}</h3>
+                <p className="text-xl font-bold text-zinc-700 dark:text-zinc-300">{stat.base_stat}</p>
               </div>
             ))}
           </div>
         </div>
-        <div className="p-6">
-          <h2 className="text-2xl font-semibold text-zinc-800 dark:text-gray-200">Evolution Chain</h2>
-          <div className="group flex max-md:flex-col justify-center gap-6 mt-6 px-4 md:px-0">
+        <div className="py-6 md:px-6 mb-6">
+          <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Evolution Chain</h2>
+          <div className="group flex max-md:flex-col justify-center gap-10 md:gap-6 mt-6 px-4 md:px-0">
             {pokemon.evolutionChain.map((evolution) => (
               <PokemonCard key={evolution.id} pokemon={evolution} />
             ))}
           </div>
         </div>
-        <div className="flex justify-between p-6">
-          <button
-            onClick={() => handleNavigation('prev')}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md"
-            disabled={pokemonNames.indexOf(name as string) === 0}
-          >
-            Previous
-          </button>
-          <button
-            onClick={() => handleNavigation('next')}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md"
-            disabled={pokemonNames.indexOf(name as string) === pokemonNames.length - 1}
-          >
-            Next
-          </button>
-        </div>
+        <audio ref={audioRef} src={`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokemon.id}.ogg`} />
       </div>
     </div>
   );

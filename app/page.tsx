@@ -51,6 +51,7 @@ export default function HomePage() {
     fetchPokemon();
   }, []);
 
+  // Handle the sorting.
   const handleSort = (list: Pokemon[], order: string) => {
     switch (order) {
       case 'Lowest Number (First)':
@@ -101,9 +102,9 @@ export default function HomePage() {
         />
       </div>
       <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-zinc-500 dark:text-zinc-400">
-        A simple Pokedex page using the RESTful Pokémon API from{' '}
+        A simple Pokédex page using the RESTful Pokémon API from{' '}
         <Link href="https://pokeapi.co/" aria-label="Poke API">
-          <span className='dark:text-blue-400 text-blue-500 font-semibold underline'>https://pokeapi.co/</span>
+          <span className='dark:text-blue-400 text-blue-500 font-bold underline'>PokéAPI</span>
         </Link>
       </p>
       <div className='mt-8 mx-auto max-w-2xl'>

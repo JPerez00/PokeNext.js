@@ -21,7 +21,7 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
 
   return (
     <Link href={`/pokemon/${pokemon.name}`}>
-      <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-md hover:shadow-lg overflow-hidden transform transition-transform hover:scale-105 cursor-pointer ring-1 ring-zinc-900/5 backdrop-blur dark:ring-white/30 dark:hover:ring-white/40">
+      <div className="min-w-56 bg-white dark:bg-zinc-800 rounded-3xl shadow-md hover:shadow-lg overflow-hidden transform transition-transform hover:scale-105 cursor-pointer ring-1 ring-zinc-900/5 backdrop-blur dark:ring-white/30 dark:hover:ring-white/40">
         <div className="relative w-full pb-full bg-gray-200 dark:bg-zinc-700" style={{ paddingBottom: '100%' }}>
           <Image 
             src={pokemon.image} 
@@ -41,7 +41,7 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
               {pokemon.types.map((type) => (
                 <span 
                   key={type} 
-                  className={`px-5 py-2 text-xs font-semibold rounded-full ${getTypeColor(type)}`}
+                  className={`capitalize px-5 py-2 text-xs font-semibold rounded-full ${getTypeColor(type)}`}
                 >
                   {type}
                 </span>
