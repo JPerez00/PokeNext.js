@@ -41,7 +41,7 @@ export default function Navbar() {
             width={140}
             height={60}
             priority
-            className="w-30 h-auto md:w-36 md:h-auto"
+            className="w-24 h-auto md:w-36 md:h-auto"
           />
         </Link>
         <DarkModeToggle />
