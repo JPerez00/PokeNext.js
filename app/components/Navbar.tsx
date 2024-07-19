@@ -19,6 +19,7 @@ function PokeballIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) 
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className='hover:animate-spin'
     >
       <circle cx="12" cy="12" r="10" />
       <circle cx="12" cy="12" r="4" />
@@ -40,7 +41,7 @@ export default function Navbar() {
             width={140}
             height={60}
             priority
-            style={{ width: 'auto', height: 'auto' }}
+            className="w-30 h-auto md:w-36 md:h-auto"
           />
         </Link>
         <DarkModeToggle />
