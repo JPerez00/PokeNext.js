@@ -23,7 +23,7 @@ export default function Dropdown({ setSortOrder }: DropdownProps) {
         name="sort"
         value={selectedOption}
         onChange={handleChange}
-        className="mt-2 block pl-4 pr-8 py-3 text-base bg-zinc-50 border border-zinc-300 rounded-xl text-zinc-500 focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+        className="mt-2 block pl-4 pr-8 py-3 text-base bg-white dark:bg-zinc-100 border border-zinc-300 rounded-xl dark:text-zinc-500 text-zinc-600 focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
       >
         <option>Lowest Number (First)</option>
         <option>Highest Number (First)</option>

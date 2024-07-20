@@ -48,7 +48,7 @@ export default function SearchBar({ setSearchQuery }: SearchBarProps) {
       <input
         ref={inputRef}
         type="text"
-        className="px-12 w-full py-2 border border-zinc-300 rounded-xl text-zinc-700"
+        className="px-12 w-full py-2 border bg-white dark:bg-zinc-100 border-zinc-300 rounded-xl text-zinc-600"
         placeholder="Search Pokémon..."
         onChange={(e) => setSearchQuery(e.target.value)}
       />
@@ -58,7 +58,7 @@ export default function SearchBar({ setSearchQuery }: SearchBarProps) {
         aria-label="ESC"
         onClick={handleReset}
       >
-        Press ESC to reset
+        ESC
       </button>
     </div>
   );

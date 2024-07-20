@@ -5,6 +5,7 @@ import './globals.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
+import Theme from './components/theme-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,12 +24,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`flex-auto antialiased bg-zinc-100 dark:bg-zinc-900 ${inter.className}`}>
-        <Navbar />
-        <main className="container mx-auto p-4">{children}</main>
-        <Footer />
-        <BackToTop />
+        <Theme>
+          <Navbar />
+          <main className="container mx-auto p-4">{children}</main>
+          <Footer />
+          <BackToTop />
+        </Theme>
       </body>
     </html>
   );
