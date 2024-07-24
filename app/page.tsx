@@ -9,7 +9,6 @@ import Link from 'next/link';
 import heroImage from '@/public/PokeNextjs.png';
 import Image from 'next/image';
 import loadingGif from '@/public/pikachu-sprint-animation.gif';
-import { Github } from './components/Icons';
 
 interface Pokemon {
   name: string;
@@ -80,40 +79,16 @@ export default function HomePage() {
 
   return (
     <div className="pb-16 pt-20 text-center lg:pt-24 px-2">
-      <div className="mx-auto mt-6 flex items-center justify-center gap-2">
-        <Link
-          className="shadow group flex max-w-fit items-center justify-center rounded-full px-3 py-1 text-sm leading-6 border border-zinc-700 bg-zinc-700 dark:bg-zinc-300 dark:border-zinc-300 text-white dark:text-zinc-800 transition-colors hover:bg-white hover:text-black dark:hover:bg-zinc-600 dark:hover:text-zinc-50"             
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg
-            className="h-4 w-4 group-hover:text-black"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 4L20 20H4L12 4Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <p className='ml-1'>Deploy to Vercel</p>
-        </Link>
-        <Link
-          className="shadow inline-flex rounded-full px-3 py-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400 hover:ring-gray-900/20 bg-white dark:bg-zinc-800 ring-1 ring-zinc-900/10 backdrop-blur dark:ring-white/20 dark:hover:ring-white/30"
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Github className='mt-1 items-center justify-center align-center'/>
-          <p>
-            <span className="ml-1 items-center justify-center">Star on</span> GitHub{" "}
-          </p>
-        </Link>
+      <div className='mt-4 flex gap-2 flex-row align-center items-center justify-center'>
+        <div className="shadow inline-flex rounded-full px-3 py-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400 hover:ring-gray-900/20 bg-white dark:bg-zinc-800 ring-1 ring-zinc-900/10 backdrop-blur dark:ring-white/20 dark:hover:ring-white/30">
+          Next.js
+        </div>
+        <div className="shadow inline-flex rounded-full px-3 py-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400 hover:ring-gray-900/20 bg-white dark:bg-zinc-800 ring-1 ring-zinc-900/10 backdrop-blur dark:ring-white/20 dark:hover:ring-white/30">
+          Typescript
+        </div>
+        <div className="shadow inline-flex rounded-full px-3 py-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400 hover:ring-gray-900/20 bg-white dark:bg-zinc-800 ring-1 ring-zinc-900/10 backdrop-blur dark:ring-white/20 dark:hover:ring-white/30">
+          Tailwind CSS
+        </div>
       </div>
       <div className="flex justify-center items-center mx-auto max-w-2xl">
         <Image 
@@ -132,19 +107,7 @@ export default function HomePage() {
           <span className='dark:text-blue-400 text-blue-500 font-bold underline'>PokéAPI</span>
         </Link>
       </p>
-      <div className='mt-4 flex gap-2 flex-row align-center items-center justify-center'>
-        <p className='text-lg tracking-tight text-zinc-500 dark:text-zinc-400'>Built with</p>
-        <div className="shadow inline-flex rounded-full px-3 py-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400 hover:ring-gray-900/20 bg-white dark:bg-zinc-800 ring-1 ring-zinc-900/10 backdrop-blur dark:ring-white/20 dark:hover:ring-white/30">
-          Next.js
-        </div>
-        <div className="shadow inline-flex rounded-full px-3 py-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400 hover:ring-gray-900/20 bg-white dark:bg-zinc-800 ring-1 ring-zinc-900/10 backdrop-blur dark:ring-white/20 dark:hover:ring-white/30">
-          Typescript
-        </div>
-        <div className="shadow inline-flex rounded-full px-3 py-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400 hover:ring-gray-900/20 bg-white dark:bg-zinc-800 ring-1 ring-zinc-900/10 backdrop-blur dark:ring-white/20 dark:hover:ring-white/30">
-          Tailwind CSS
-        </div>
-      </div>
-      <div className='mt-10 mx-auto max-w-2xl'>
+      <div className='mt-8 mx-auto max-w-2xl'>
         <SearchBar setSearchQuery={setSearchQuery} />
         <Dropdown setSortOrder={setSortOrder} />
       </div>
@@ -172,9 +135,9 @@ export default function HomePage() {
             <div className="mt-20">
               <button
                 onClick={handleLoadMore}
-                className="px-6 py-2 bg-blue-500 text-white rounded-md"
+                className="px-6 py-2 bg-blue-500 text-white rounded-full"
               >
-                Load more Pokémon
+                Load More Pokémon
               </button>
             </div>
           )}

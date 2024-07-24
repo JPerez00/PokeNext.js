@@ -27,7 +27,7 @@ export default function Footer() {
             href="https://github.com/JPerez00/PokeNext.js"
           >
             <ArrowIcon />
-            <p className="ml-2 h-7 text-md">Github</p>
+            <p className="ml-2 h-7 text-md">Star On Github</p>
           </a>
         </li>
         <li>
@@ -38,7 +38,7 @@ export default function Footer() {
             href="https://pokeapi.co/"
           >
             <ArrowIcon />
-            <p className="ml-2 h-7">PokéAPI</p>
+            <p className="ml-2 h-7">PokéAPI Link</p>
           </a>
         </li>
         <li>

@@ -29,7 +29,7 @@ export default function DarkModeToggle() {
 
   return (
     <button
-      className="border-2 rounded-md w-8 h-8 flex items-center justify-center"
+      className="shadow border-2 rounded-full w-8 h-8 flex items-center justify-center"
       onClick={toggleDarkMode}
     >
       <span className="sr-only">Toggle mode</span>
@@ -38,7 +38,7 @@ export default function DarkModeToggle() {
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          strokeWidth={2}
+          strokeWidth={1}
           stroke="white"
           className="w-6 h-6"
         >
@@ -53,7 +53,7 @@ export default function DarkModeToggle() {
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          strokeWidth={2}
+          strokeWidth={1}
           stroke="white"
           className="w-5 h-5"
         >
