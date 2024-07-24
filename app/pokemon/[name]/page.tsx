@@ -9,7 +9,7 @@ import { pokemonNames } from '@/lib/pokemonNames';
 import { typeWeaknesses } from '@/lib/typeWeaknesses';
 import PokemonCard from '@/app/components/PokemonCard';
 import loadingGif from '@/public/pikachu-sprint-animation.gif'
-import PlayIcon from '@/app/components/PlayIcon';
+import { PlayIcon } from '@/app/components/Icons';
 
 interface Pokemon {
   name: string;
