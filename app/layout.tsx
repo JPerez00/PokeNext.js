@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: {
     template: '%s - PokeNext.js',
-    default: 'PokeNext.js - A Next.js 14 Pokedex Page',
+    default: 'PokeNext.js - A simple Pokedex page using the RESTful Pokémon API',
   },
   description:
     'A simple Next.js, Typescript and Tailwind CSS Pokedex page using the RESTful Pokémon API.',
