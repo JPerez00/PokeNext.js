@@ -121,6 +121,7 @@ export default function HomePage() {
             className='justify-center align-center text-center flex items-center mx-auto mb-4'
             priority
             style={{ height: 'auto' }}
+            unoptimized
           />
           Loading Pokémon...
         </div>

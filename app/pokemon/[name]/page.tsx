@@ -135,6 +135,7 @@ export default function PokemonDetail() {
       height={100}
       className='justify-center align-center text-center flex items-center mx-auto mb-4'
       priority
+      unoptimized
     />
       Loading Pokémon...
     </div>;
