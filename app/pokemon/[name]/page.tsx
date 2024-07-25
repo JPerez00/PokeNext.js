@@ -36,7 +36,7 @@ interface Pokemon {
     types: string[];
     abilities: string[];
   }[];
-  flavorText: string;
+  flavorTextEntries: { version: string, text: string }[];
 }
 
 export default function PokemonDetail() {
@@ -44,6 +44,7 @@ export default function PokemonDetail() {
   const router = useRouter();
   const [pokemon, setPokemon] = useState<Pokemon | null>(null);
   const [hover, setHover] = useState(false);
+  const [selectedVersion, setSelectedVersion] = useState<string>('');
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -83,9 +84,9 @@ export default function PokemonDetail() {
   
       const evolutionChain = await getEvolutionChain(evolutionData);
   
-      const englishFlavorText = speciesData.flavor_text_entries.find(
-        (entry: any) => entry.language.name === 'en'
-      ).flavor_text;
+      const flavorTextEntries = speciesData.flavor_text_entries
+        .filter((entry: any) => entry.language.name === 'en')
+        .map((entry: any) => ({ version: entry.version.name, text: entry.flavor_text }));
   
       const pokemonData: Pokemon = {
         name: response.data.name,
@@ -109,9 +110,10 @@ export default function PokemonDetail() {
           generation: speciesData.generation?.name || 'Unknown',
         },
         evolutionChain,
-        flavorText: englishFlavorText
+        flavorTextEntries,
       };
       setPokemon(pokemonData);
+      setSelectedVersion(flavorTextEntries[0]?.version || '');
     };
   
     fetchPokemon();
@@ -148,20 +150,26 @@ export default function PokemonDetail() {
     }
   };
 
+  const handleVersionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedVersion(event.target.value);
+  };
+
+  const selectedFlavorText = pokemon.flavorTextEntries.find(entry => entry.version === selectedVersion)?.text;
+
   return (
     <div className="min-h-screen">
-      <div className="max-w-4xl mx-auto md:bg-zinc-50 md:dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden mb-10">
+      <div className="max-w-4xl mx-auto md:bg-zinc-50 md:dark:bg-zinc-800 rounded-lg md:shadow-lg overflow-hidden mb-10">
       <div className="flex justify-between p-6">
           <button
             onClick={() => handleNavigation('prev')}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm"
+            className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-sm transition-all shadow"
             disabled={pokemonNames.indexOf(name as string) === 0}
           >
             Previous Pokémon
           </button>
           <button
             onClick={() => handleNavigation('next')}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm"
+            className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-sm transition-all shadow"
             disabled={pokemonNames.indexOf(name as string) === pokemonNames.length - 1}
           >
             Next Pokémon
@@ -182,12 +190,12 @@ export default function PokemonDetail() {
               )}
             </div>
           </div>
-          <div className="w-full md:w-2/4 md:pl-6 mt-6 md:mt-0">
-            <h1 className="text-3xl font-bold capitalize text-gray-900 dark:text-white">
+          <div className="w-full md:w-2/4 md:pl-6 mt-6 md:mt-0 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold capitalize text-gray-900 dark:text-white">
               {pokemon.name}
             </h1>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-300">#{formattedId}</p>
-            <div className='flex space-x-2 mt-2'>
+            <p className="text-xl mt-3 text-zinc-600 dark:text-zinc-300">#{formattedId}</p>
+            <div className='flex space-x-2 mt-3'>
               <button
                 aria-hidden="true"
                 onClick={playCry} 
@@ -217,11 +225,11 @@ export default function PokemonDetail() {
                 ))}
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-2">
               <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200">Abilities:</h2>
               <div className="flex space-x-2 mt-2">
                 {pokemon.abilities.map((ability) => (
-                  <span key={ability} className="capitalize text-xs font-semibold bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-full px-3 py-1">
+                  <span key={ability} className="capitalizefont-semibold bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-full px-4 py-2 text-xs">
                     {ability}
                   </span>
                 ))}
@@ -229,9 +237,9 @@ export default function PokemonDetail() {
             </div>
             <div className="mt-4">
               <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200">Weaknesses:</h2>
-              <div className="flex space-x-2 mt-2">
+              <div className="flex flex-wrap gap-2 mt-2">
                 {pokemon.weaknesses.map((weakness) => (
-                  <span key={weakness} className={`capitalize text-xs font-semibold rounded-full ${getTypeColor(weakness)} px-3 py-1`}>
+                  <span key={weakness} className={`capitalize text-xs font-semibold rounded-full ${getTypeColor(weakness)} px-4 py-2 text-xs`}>
                     {weakness}
                   </span>
                 ))}
@@ -239,40 +247,56 @@ export default function PokemonDetail() {
             </div>
           </div>
         </div>
-        <div className="py-6 md:px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="py-10 md:px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Details:</h2>
+            <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Pokémon Details:</h2>
             <div className="mt-2">
-              <p className="text-lg text-zinc-700 dark:text-zinc-300">{pokemon.flavorText}</p>
-              <p className="text-lg text-zinc-700 dark:text-zinc-300 mt-2">Category: {pokemon.category}</p>
+              <div className='container mx-auto flex'>
+              <label htmlFor="sort" className="block tracking-tight text-lg text-zinc-800 dark:text-zinc-200 mt-3 mr-5">
+                  Game Version:
+                </label>
+                <select
+                    className="capitalize mt-2 bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 px-4 py-2 rounded-md"
+                    value={selectedVersion}
+                    onChange={handleVersionChange}
+                  >
+                    {pokemon.flavorTextEntries.map(entry => (
+                      <option key={entry.version} value={entry.version}>
+                        {entry.version}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              <p className="text-lg text-zinc-800 dark:text-zinc-200 bg-zinc-200 dark:bg-zinc-700 px-4 py-2 rounded-xl mt-4">{selectedFlavorText}</p>
+              <p className="text-lg text-zinc-700 dark:text-zinc-300 mt-3">Category: {pokemon.category}</p>
               <p className="text-lg text-zinc-700 dark:text-zinc-300">Height: {pokemon.height / 10} m</p>
               <p className="text-lg text-zinc-700 dark:text-zinc-300">Weight: {pokemon.weight / 10} kg</p>
             </div>
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Species Information</h2>
-            <div className="mt-2">
-              <p className="text-lg text-zinc-700 dark:text-zinc-300">Habitat: {pokemon.species.habitat}</p>
-              <p className="text-lg text-zinc-700 dark:text-zinc-300">Shape: {pokemon.species.shape}</p>
-              <p className="text-lg text-zinc-700 dark:text-zinc-300">Color: {pokemon.species.color}</p>
-              <p className="text-lg text-zinc-700 dark:text-zinc-300">Generation: {pokemon.species.generation}</p>
+            <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Species Information:</h2>
+            <div className="mt-4">
+              <p className="capitalize text-lg text-zinc-700 dark:text-zinc-300">Habitat: {pokemon.species.habitat}.</p>
+              <p className="capitalize text-lg text-zinc-700 dark:text-zinc-300">Shape: {pokemon.species.shape}.</p>
+              <p className="capitalize text-lg text-zinc-700 dark:text-zinc-300">Color: {pokemon.species.color}.</p>
+              <p className="capitalize text-lg text-zinc-700 dark:text-zinc-300">Generation: {pokemon.species.generation}.</p>
             </div>
           </div>
         </div>
         <div className="py-6 md:px-6">
-          <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Stats</h2>
+          <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Pokémon Stats:</h2>
           <div className="grid grid-cols-2 gap-8 mt-4">
             {pokemon.stats.map((stat) => (
-              <div key={stat.name} className="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200 capitalize">{stat.name}</h3>
-                <p className="text-xl font-bold text-zinc-700 dark:text-zinc-300">{stat.base_stat}</p>
+              <div key={stat.name} className="bg-gray-200 dark:bg-gray-700 px-6 py-4 rounded-xl hover:scale-105 overflow-hidden transform transition-transform shadow hover:shadow-md">
+                <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200 capitalize">{stat.name}:</h3>
+                <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">{stat.base_stat}</p>
               </div>
             ))}
           </div>
         </div>
         <div className="py-6 md:px-6 mb-6">
-          <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Evolution Chain</h2>
-          <div className="group flex max-md:flex-col justify-center gap-10 md:gap-6 mt-6 px-4 md:px-0">
+          <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Pokémon Evolution Chain:</h2>
+          <div className="group flex max-md:flex-col justify-center gap-10 mt-10 px-4 md:px-0">
             {pokemon.evolutionChain.map((evolution) => (
               <PokemonCard key={evolution.id} pokemon={evolution} />
             ))}
