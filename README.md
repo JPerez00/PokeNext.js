@@ -1,18 +1,18 @@
-## PokeNext.js
+# PokeNext.js
 
 ![Image](/public/images/poke-nextjs-thumb.png)
 
-A simple Pokédex built using [Next.js](https://nextjs.org/), [TypeScript](https://www.typescriptlang.org/[) & [Tailwind CSS](https://tailwindcss.com/) that serves as a Pokédex. This project integrates with the RESTful Pokémon API [PokéAPI](https://pokeapi.co/) to fetch and display detailed information about the first 151 Pokémon, including their sprites, stats, types, abilities, evolution chains and even playing the Pokémon’s cry sound.
+PokeNext.js is a web application built using [Next.js](https://nextjs.org/), [TypeScript](https://www.typescriptlang.org/[) & [Tailwind CSS](https://tailwindcss.com/) that serves as a Pokédex. This project integrates with the RESTful Pokémon API [PokéAPI](https://pokeapi.co/) to fetch and display detailed information about the first 151 Pokémon, including their sprites, stats, types, abilities, evolution chains and even playing the Pokémon’s cry sound.
 
 ## Features
 
--Responsive design.
--Search and sort functionality.
--Full Pokemon cards for first 151 Pokémon.
--Interactive Features: Hover a button to see the shiny sprite and playing the Pokémon’s cry sound.
--Optimized Image Handling:
--Efficient Data Fetching (Axios).
--Dark Mode Support (Next Themes.)
+- Responsive design.
+- Search and sort functionality.
+- Full Pokemon cards & detail page for the first 151 Pokémon.
+- Interactive features: Hover a button to see the shiny sprite and playing the Pokémon’s cry sound.
+- Optimized image handling.
+- Efficient data Fetching (Axios).
+- Dark mode support, with toggle (Next Themes).
 
 ## Getting Started
 
