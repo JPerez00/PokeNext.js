@@ -4,6 +4,10 @@
 
 PokeNext.js is a web application built using [Next.js](https://nextjs.org/), [TypeScript](https://www.typescriptlang.org/[) & [Tailwind CSS](https://tailwindcss.com/) that serves as a Pokédex. This project integrates with the RESTful Pokémon API [PokéAPI](https://pokeapi.co/) to fetch and display detailed information about the first 151 Pokémon, including their sprites, stats, types, abilities, evolution chains and even playing the Pokémon’s cry sound.
 
+## Demo
+
+[https://poke-nextjs-opal.vercel.app/](https://poke-nextjs-opal.vercel.app/)
+
 ## Features
 
 - Responsive design.
@@ -14,9 +18,15 @@ PokeNext.js is a web application built using [Next.js](https://nextjs.org/), [Ty
 - Efficient data Fetching (Axios).
 - Dark mode support, with toggle (Next Themes).
 
-## Getting Started
+## Clone and Deploy
 
-First, run the development server:
+First, execute create-next-app with npm to bootstrap the example:
+
+```bash
+npm create next-app --example https://github.com/JPerez00/PokeNext.js/tree/main your-project-name-here
+```
+
+Then run the development server:
 
 ```bash
 npm run dev
