@@ -3,13 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import axios from 'axios';
 import { getTypeColor } from '@/lib/typeColors';
 import { pokemonNames } from '@/lib/pokemonNames';
-import { typeWeaknesses } from '@/lib/typeWeaknesses';
 import PokemonCard from '@/app/components/PokemonCard';
-import loadingGif from '@/public/pikachu-sprint-animation.gif'
+import loadingGif from '@/public/pikachu-sprint-animation.gif';
 import { PlayIcon } from '@/app/components/Icons';
+import usePokemonData from '@/lib/usePokemonData';
 
 interface Pokemon {
   name: string;
@@ -47,78 +46,14 @@ export default function PokemonDetail() {
   const [selectedVersion, setSelectedVersion] = useState<string>('');
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  const { data: pokemonData, loading } = usePokemonData(name as string);
+
   useEffect(() => {
-    if (!name) return;
-  
-    const fetchPokemon = async () => {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
-      const speciesResponse = await axios.get(response.data.species.url);
-      const speciesData = speciesResponse.data;
-      const evolutionResponse = await axios.get(speciesData.evolution_chain.url);
-      const evolutionData = evolutionResponse.data;
-  
-      const types = response.data.types.map((typeInfo: any) => typeInfo.type.name);
-  
-      // Calculate weaknesses based on types
-      const weaknesses = Array.from(new Set(types.flatMap((type: string) => typeWeaknesses[type]))) as string[];
-  
-      const getEvolutionChain = async (evolutionChain: any): Promise<{ name: string; id: number; image: string; types: string[]; abilities: string[]; }[]> => {
-        const chain: { name: string; id: number; image: string; types: string[]; abilities: string[]; }[] = [];
-        const fetchChainData = async (chainLink: any) => {
-          const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${chainLink.species.name}`);
-          const data = response.data;
-          chain.push({
-            name: data.name,
-            id: data.id,
-            image: data.sprites.other['official-artwork'].front_default,
-            types: data.types.map((typeInfo: any) => typeInfo.type.name),
-            abilities: data.abilities.map((abilityInfo: any) => abilityInfo.ability.name),
-          });
-          if (chainLink.evolves_to.length > 0) {
-            await fetchChainData(chainLink.evolves_to[0]);
-          }
-        };
-        await fetchChainData(evolutionChain.chain);
-        return chain;
-      };
-  
-      const evolutionChain = await getEvolutionChain(evolutionData);
-  
-      const flavorTextEntries = speciesData.flavor_text_entries
-        .filter((entry: any) => entry.language.name === 'en')
-        .map((entry: any) => ({ version: entry.version.name, text: entry.flavor_text }));
-  
-      const pokemonData: Pokemon = {
-        name: response.data.name,
-        id: response.data.id,
-        image: response.data.sprites.other['official-artwork'].front_default,
-        shinyImage: response.data.sprites.other['official-artwork'].front_shiny,
-        types,
-        abilities: response.data.abilities.map((abilityInfo: any) => abilityInfo.ability.name),
-        weight: response.data.weight,
-        height: response.data.height,
-        stats: response.data.stats.map((statInfo: any) => ({
-          name: statInfo.stat.name,
-          base_stat: statInfo.base_stat,
-        })),
-        weaknesses,
-        category: speciesData.genera.find((genus: any) => genus.language.name === 'en').genus,
-        species: {
-          habitat: speciesData.habitat?.name || 'Unknown',
-          shape: speciesData.shape?.name || 'Unknown',
-          color: speciesData.color?.name || 'Unknown',
-          generation: speciesData.generation?.name || 'Unknown',
-        },
-        evolutionChain,
-        flavorTextEntries,
-      };
+    if (pokemonData) {
       setPokemon(pokemonData);
-      setSelectedVersion(flavorTextEntries[0]?.version || '');
-    };
-  
-    fetchPokemon();
-  }, [name]);
-  
+      setSelectedVersion(pokemonData.flavorTextEntries[0]?.version || '');
+    }
+  }, [pokemonData]);
 
   const handleNavigation = (direction: 'prev' | 'next') => {
     const currentIndex = pokemonNames.indexOf(name as string);
@@ -129,18 +64,21 @@ export default function PokemonDetail() {
     }
   };
 
-  if (!pokemon) return <div className='mt-10 mb-10 text-center font-bold text-2xl tracking-tighter text-zinc-700 dark:text-zinc-300 animate-bounce transition-all'>
-    <Image 
-      src={loadingGif} 
-      alt='Loading Gif'
-      width={100}
-      height={100}
-      className='justify-center align-center text-center flex items-center mx-auto mb-4'
-      priority
-      unoptimized
-    />
-      Loading Pokémon...
-    </div>;
+  if (loading || !pokemon)
+    return (
+      <div className='mt-10 mb-10 text-center font-bold text-2xl tracking-tighter text-zinc-700 dark:text-zinc-300 animate-bounce transition-all'>
+        <Image 
+          src={loadingGif} 
+          alt='Loading Gif'
+          width={100}
+          height={100}
+          className='justify-center align-center text-center flex items-center mx-auto mb-4'
+          priority
+          unoptimized
+        />
+        Loading Pokémon...
+      </div>
+    );
 
   const formattedId = pokemon.id.toString().padStart(3, '0');
 
@@ -154,12 +92,12 @@ export default function PokemonDetail() {
     setSelectedVersion(event.target.value);
   };
 
-  const selectedFlavorText = pokemon.flavorTextEntries.find(entry => entry.version === selectedVersion)?.text;
+  const selectedFlavorText = pokemon.flavorTextEntries.find((entry) => entry.version === selectedVersion)?.text;
 
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto md:bg-zinc-50 md:dark:bg-zinc-800 rounded-lg md:shadow-lg overflow-hidden mb-10">
-      <div className="flex justify-between p-6">
+        <div className="flex justify-between p-6">
           <button
             onClick={() => handleNavigation('prev')}
             className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-sm transition-all shadow"
@@ -180,25 +118,23 @@ export default function PokemonDetail() {
             <div className="relative w-full pb-full md:pb-0 md:h-0" style={{ paddingBottom: '100%' }}>
               {pokemon.image && (
                 <Image 
-                src={hover ? pokemon.shinyImage : pokemon.image} 
-                alt={pokemon.name} 
-                fill
-                sizes="(max-width: 768px) 100vw, (min-width: 769px) 50vw"
-                className="absolute top-0 left-0 w-full h-full object-cover" 
-                priority
-              />
+                  src={hover ? pokemon.shinyImage : pokemon.image} 
+                  alt={pokemon.name} 
+                  fill
+                  sizes="(max-width: 768px) 100vw, (min-width: 769px) 50vw"
+                  className="absolute top-0 left-0 w-full h-full object-cover" 
+                  priority
+                />
               )}
             </div>
           </div>
           <div className="w-full md:w-2/4 md:pl-6 mt-6 md:mt-0 mb-6">
-            <h1 className="text-4xl md:text-5xl font-bold capitalize text-gray-900 dark:text-white">
-              {pokemon.name}
-            </h1>
+            <h1 className="text-4xl md:text-5xl font-bold capitalize text-gray-900 dark:text-white">{pokemon.name}</h1>
             <p className="text-xl mt-3 text-zinc-600 dark:text-zinc-300">#{formattedId}</p>
-            <div className='flex space-x-2 mt-3'>
+            <div className="flex space-x-2 mt-3">
               <button
                 aria-hidden="true"
-                onClick={playCry} 
+                onClick={playCry}
                 className="flex items-center bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 hover:dark:bg-zinc-600 text-zinc-800 dark:text-zinc-200 px-4 py-2 text-xs font-semibold rounded-full"
               >
                 Play Cry
@@ -229,7 +165,7 @@ export default function PokemonDetail() {
               <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200">Abilities:</h2>
               <div className="flex space-x-2 mt-2">
                 {pokemon.abilities.map((ability) => (
-                  <span key={ability} className="capitalizefont-semibold bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-full px-4 py-2 text-xs">
+                  <span key={ability} className="capitalize font-semibold bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-full px-4 py-2 text-xs">
                     {ability}
                   </span>
                 ))}
@@ -251,22 +187,22 @@ export default function PokemonDetail() {
           <div>
             <h2 className="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">Pokémon Details:</h2>
             <div className="mt-2">
-              <div className='container mx-auto flex'>
-              <label htmlFor="sort" className="block tracking-tight text-lg text-zinc-800 dark:text-zinc-200 mt-3 mr-5">
+              <div className="container mx-auto flex">
+                <label htmlFor="sort" className="block tracking-tight text-lg text-zinc-800 dark:text-zinc-200 mt-3 mr-5">
                   Game Version:
                 </label>
                 <select
-                    className="capitalize mt-2 bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 px-4 py-2 rounded-md"
-                    value={selectedVersion}
-                    onChange={handleVersionChange}
-                  >
-                    {pokemon.flavorTextEntries.map(entry => (
-                      <option key={entry.version} value={entry.version}>
-                        {entry.version}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  className="capitalize mt-2 bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 px-4 py-2 rounded-md"
+                  value={selectedVersion}
+                  onChange={handleVersionChange}
+                >
+                  {pokemon.flavorTextEntries.map((entry) => (
+                    <option key={entry.version} value={entry.version}>
+                    {entry.version}
+                  </option>
+                  ))}
+                </select>
+              </div>
               <p className="text-lg text-zinc-800 dark:text-zinc-200 bg-zinc-200 dark:bg-zinc-700 px-4 py-2 rounded-xl mt-4">{selectedFlavorText}</p>
               <p className="text-lg text-zinc-700 dark:text-zinc-300 mt-3">Category: {pokemon.category}</p>
               <p className="text-lg text-zinc-700 dark:text-zinc-300">Height: {pokemon.height / 10} m</p>
@@ -307,4 +243,3 @@ export default function PokemonDetail() {
     </div>
   );
 }
-
