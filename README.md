@@ -10,15 +10,15 @@ PokeNext.js is a web application built using [Next.js](https://nextjs.org/), [Ty
 
 ## Features
 
-- Responsive design.
+- Responsive design (desktop & mobile).
 - Search and sort functionality.
 - Full Pokemon cards & detail page for the first 151 Pokémon.
 - Interactive features: Hover a button to see the shiny sprite and playing the Pokémon’s cry sound.
-- Optimized image handling.
-- Efficient data Fetching (Axios).
+- Optimized image handling (loading gifs).
 - Dark mode support, with toggle (Next Themes).
+- Efficient data fetching & local caching with SWR and axios, as requested in the PokéAPI doc page, more info below.
 
-## Clone and Deploy
+## Clone & Deploy
 
 First, execute create-next-app with npm to bootstrap the example:
 
@@ -34,7 +34,23 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the Home page by modifying `app/page.tsx`, and the Pokemon Detail Page by modifying `app/pokemon/[name]/page.tsx`, the pages will auto-updates as you edit the files.
+## Start Editing
+
+- Edit the Home page by modifying `app/page.tsx`,
+- Edit the Pokemon card displayed in the home page by modifiying `app/component/PokemonCard.tsx`,
+- Edit the Pokemon detail page by modifying `app/pokemon/[name]/page.tsx`,
+- Edit all the Pokemon constants like names, type weaknesses & type colors by modifying the files inside `lib/...ts`,
+- Edit the custom hook for data fetching by modifying `lib/usePokemonData.ts`:
+
+## Data Caching
+
+One of the rules or requests of the PokéAPI [documentation page](https://pokeapi.co/docs/v2#fairuse), is to implement a way to locally cache resources whenever you request them.
+
+So I created a custom hook for data fetching, which includes efficient local caching using SWR and axios. The custom hook `lib/usePokemonData.ts` handles fetching the data and caching it locally to improve performance and reduce unnecessary network requests.
+
+For more details check the blog post on my website.
+
+## Font
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
