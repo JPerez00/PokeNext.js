@@ -1,3 +1,6 @@
+import Image from "next/image";
+import heroImage from '@/public/PokeNextjs.png';
+
 function ArrowIcon() {
     return (
       <svg
@@ -17,45 +20,60 @@ function ArrowIcon() {
 
 export default function Footer() {
   return (
-    <footer className="mx-auto flex flex-col items-center justify-center bg-blue-950">
-      <ul className="text-md mt-12 flex flex-col items-center space-x-0 space-y-2 md:flex-row md:space-x-6 md:space-y-0 text-zinc-400 dark:text-zinc-300">
+    <footer className="mx-auto flex flex-col items-center justify-center bg-gradient-to-b from-zinc-900 to-blue-800">
+      <div className="flex justify-center items-center mx-auto max-w-2xl">
+        <Image 
+          src={heroImage} 
+          alt='hero Image'
+          width={200}
+          height={80}
+          priority
+          className="mt-20 w-48 h-auto md:w-60 md:h-auto"
+        />
+      </div>
+      <ul className="mt-6 mb-6 text-md flex flex-col items-center space-x-0 space-y-2 md:flex-row md:space-x-6 md:space-y-0 text-zinc-300 dark:text-zinc-300">
         <li>
           <a
-            className="flex items-center transition-all hover:text-zinc-100"
+            className="flex items-center transition-all hover:text-white"
             rel="noopener noreferrer"
             target="_blank"
             href="https://github.com/JPerez00/PokeNext.js"
           >
             <ArrowIcon />
-            <p className="ml-2 h-7 text-md">Star On Github</p>
+            <p className="ml-2 h-7 text-md tracking-tight">Star On Github</p>
           </a>
         </li>
         <li>
           <a
-            className="flex items-center transition-all hover:text-zinc-100"
+            className="flex items-center transition-all hover:text-white"
             rel="noopener noreferrer"
             target="_blank"
             href="https://pokeapi.co/"
           >
             <ArrowIcon />
-            <p className="ml-2 h-7">PokéAPI Link</p>
+            <p className="ml-2 h-7 tracking-tight">PokéAPI</p>
           </a>
         </li>
         <li>
           <a
-            className="flex items-center transition-all hover:text-zinc-100"
+            className="flex items-center transition-all hover:text-white"
             rel="noopener noreferrer"
             target="_blank"
             href="https://poke-nextjs-opal.vercel.app/"
           >
             <ArrowIcon />
-            <p className="ml-2 h-7">Demo</p>
+            <p className="ml-2 h-7 tracking-tight">Demo</p>
           </a>
         </li>
       </ul>
-      <p className="mt-8 mb-10 text-zinc-400 text-center">
-        © {new Date().getFullYear()} - PokeNext.js
-      </p>
+      <div className="text-md mb-20 flex flex-col items-center space-x-0 space-y-2 md:flex-row md:space-x-6 md:space-y-0 text-zinc-400 dark:text-zinc-300">
+        <p className="text-zinc-400 text-center tracking-tight">
+          © {new Date().getFullYear()} - PokeNext.js
+        </p>
+        <p className="text-zinc-400 text-center tracking-tight">
+          Developed By Jorge Perez
+        </p>
+      </div>
     </footer>
   );
 }
