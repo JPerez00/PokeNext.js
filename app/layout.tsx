@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import Theme from './components/theme-provider';
+import { Analytics } from "@vercel/analytics/react";
 
 // Update your project URL here
 const baseUrl = 'https://poke-nextjs-opal.vercel.app/'
@@ -59,6 +60,7 @@ export default function RootLayout({
         <Theme>
           <Navbar />
           <main className="container mx-auto p-4">{children}</main>
+          <Analytics />
           <Footer />
           <BackToTop />
         </Theme>
